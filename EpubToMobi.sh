@@ -22,29 +22,33 @@ echo "======================================"
 # -print argument puts \n after each result in variable
 
 #mobisConverted="$(find "$PWD" -type f -name '*.mobi' -print)"
-epubsToConvert="$(find "$PWD" -type f -name '*.epub' -print)"
+#epubsToConvert="$(find "$PWD" -type f -name '*.epub' -print)"
+filesToConvert="$(find "$PWD" -type f -regex ".*/.*\.\(docx\|epub\|lit\|pdf\|rtf\|txt\)" -print)"
 
 # iterate thru newline-separated list of .epubs in directory
-while read -r epubFromListToConvert; do
-	# set epub to current epub in list
-	epub="$epubFromListToConvert"
-	#echo $epub
+while read -r fileFromListToConvert; do
+	# set file to current file in list
+	file="$fileFromListToConvert"
+	#echo $file
 
-	# set destination filename for conversion, also used to check if .epub
+	# set destination filename for conversion, also used to check if input file
 	# has already been converted; ebook-convert overwrites existing file, saves time to skip
-	epubToMobi="${epubFromListToConvert%.*}.mobi"
-	#echo $epubToMobi
+	# replacing .mobi in this string will change file type for conversion; see
+	# https://manual.calibre-ebook.com/generated/en/ebook-convert.html for options
+
+	fileToMobi="${fileFromListToConvert%.*}.mobi"
+	#echo $fileToMobi
 
 	# while destination file doesn't exist
-	while [ ! -f "$epubToMobi" ] ;
+	while [ ! -f "$fileToMobi" ] ;
 	do
 		clear
 		echo "======================================"
-		echo "=======CONVERTING .EPUB TO .MOBI======"
+		echo "=======CONVERTING FILE TO .MOBI======="
 		echo "======================================"
 		echo -e "\n\n"
 		#clear
-		/usr/bin/ebook-convert "$epub" "$epubToMobi"
+		/usr/bin/ebook-convert "$file" "$fileToMobi"
 		#clear
 		echo "======================================"
 		echo "=========CONVERSION SUCCESSFUL========"
@@ -52,6 +56,5 @@ while read -r epubFromListToConvert; do
 		echo -e "\n\n"
 		break
 	done
-	break
-done <<< "$epubsToConvert"
+done <<< "$filesToConvert"
 # to use read for list, must end while loop with "<<< $list_name"
