@@ -1,5 +1,18 @@
 #!/bin/bash
 # Script to automate ebook-convert of ebooks directory (from epub to mobi)
+# requires ebook-convert package from calibre
+
+# check for installation of calibre package for ebook-convert usage
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' calibre|grep "install ok installed")
+echo "Checking for calibre installation..."
+if [ "" == "$PKG_OK" ]; then
+	echo "No calibre installation found. Installing calibre."
+	sudo apt-get install calibre
+else
+	echo "calibre already installed. Continuing with conversion."
+	echo -e "\n\n"
+fi
+
 echo "======================================"
 echo "===========EBOOK CONVERSION==========="
 echo "======================================"
@@ -39,5 +52,6 @@ while read -r epubFromListToConvert; do
 		echo -e "\n\n"
 		break
 	done
+	break
 done <<< "$epubsToConvert"
 # to use read for list, must end while loop with "<<< $list_name"
